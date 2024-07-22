@@ -91,7 +91,7 @@ app.get('/res/getByID/:id', (req, res) => {
         if (err) {
             console.error('Error getting connection:', err);
             return res.status(500).json({
-                status: 'S02',
+                status: S02,
                 currentTime: currentTime,
                 apiVersion: apiVersion,
                 message: 'Error getting connection'
@@ -109,7 +109,7 @@ app.get('/res/getByID/:id', (req, res) => {
             if (err) {
                 console.error('Error executing query:', err);
                 return res.status(500).json({
-                    status: 'S02',
+                    status: S02,
                     currentTime: currentTime,
                     apiVersion: apiVersion,
                     message: 'Error executing query'
@@ -118,7 +118,7 @@ app.get('/res/getByID/:id', (req, res) => {
 
             if (results.length === 0) {
                 return res.status(404).json({
-                    status: 'S02',
+                    status: S02,
                     currentTime: currentTime,
                     apiVersion: apiVersion,
                     message: 'No data found with given ID'
@@ -126,7 +126,7 @@ app.get('/res/getByID/:id', (req, res) => {
             }
 
             res.json({
-                status: 'S01',
+                status: S01,
                 currentTime: currentTime,
                 apiVersion: apiVersion,
                 message: results[0]
