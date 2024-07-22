@@ -5,6 +5,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql');
+const bodyParser = require('body-parser');
 const app = express();
 const port = 8080;
 
@@ -41,6 +42,9 @@ app.use((req, res, next) => {
     res.setHeader('X-Powered-By', 'NyaC API Supprot');
     next();
 });
+
+// 使用 body-parser 中间件解析 JSON 请求体
+app.use(bodyParser.json());
 
 
 // 定义消息函数
@@ -146,21 +150,30 @@ app.post('/private/testkey', (req, res) => {
     const userApiKey = req.body.apikey;
     const validApiKeys = readApiKeys();
 
+    // 检查是否包含 apikey
+    if (!req.body || !req.body.apikey) {
+        return res.status(400).json({
+            status: "S03",
+            currentTime: currentTime,
+            apiVersion: apiVersion,
+            message: "Missing API Key."
+        });
+    }
+
     if (validApiKeys.includes(userApiKey)) {
         res.json({
-            status: S01,
+            status: "S01",
             currentTime: currentTime,
             apiVersion: apiVersion,
             message: "API Key Passed."
         });
     } else {
         res.status(401).json({
-            status: S02,
+            status: "S02",
             currentTime: currentTime,
             apiVersion: apiVersion,
             message: "API Key is not correct."
         });
-        // 在这里执行未通过验证的逻辑
     }
 });
 
