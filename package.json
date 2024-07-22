@@ -4,7 +4,7 @@
   "description": "APIs For GAS",
   "main": "app.js",
   "scripts": {
-    "test": "node dev.js"
+    "test": "node dev.js",
     "start": "node app.js"
   },
   "repository": {
