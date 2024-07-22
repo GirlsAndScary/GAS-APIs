@@ -73,7 +73,7 @@ app.get('/', (req, res) => {
 });
 
 // 时间请求端点
-app.get('/time', (req, res) => {
+app.get('/public/time', (req, res) => {
     const currentTime = formatCurrentTime();
     res.json({
         status: S01,
@@ -83,7 +83,7 @@ app.get('/time', (req, res) => {
 });
 
 // 根据ID查询data字段的请求端点
-app.get('/res/getByID/:id', (req, res) => {
+app.get('/public/res/getByID/:id', (req, res) => {
     const id = req.params.id;
     // 查询数据库
     pool.getConnection((err, connection) => {
