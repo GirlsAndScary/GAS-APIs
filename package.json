@@ -1,0 +1,28 @@
+{
+  "name": "gas-apis",
+  "version": "1.0.0",
+  "description": "APIs For GAS",
+  "main": "app.js",
+  "scripts": {
+    "test": "dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GirlsAndScary/GAS-APIs.git"
+  },
+  "keywords": [
+    "node",
+    "api"
+  ],
+  "author": "CH/Nyaworks",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GirlsAndScary/GAS-APIs/issues"
+  },
+  "homepage": "https://github.com/GirlsAndScary/GAS-APIs#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security",
+    "mysql": "^2.18.1"
+  }
+}
