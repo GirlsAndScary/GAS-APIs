@@ -126,7 +126,10 @@ app.get('/res/getByID/:id', (req, res) => {
                 status: S01,
                 currentTime: currentTime,
                 apiVersion: apiVersion,
-                message: results[0]
+                message: {
+                    id: id,
+                    data: results[0].data 
+                }
             });
         });
     });
