@@ -149,7 +149,8 @@ app.get('/public/res/getByID/:id', (req, res) => {
 app.post('/private/testkey', (req, res) => {
     const userApiKey = req.body.apikey;
     const validApiKeys = readApiKeys();
-
+    const currentTime = formatCurrentTime();
+    
     // 检查是否包含 apikey
     if (!req.body || !req.body.apikey) {
         return res.status(400).json({
