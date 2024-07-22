@@ -98,7 +98,7 @@ app.get('/res/getByID/:id', (req, res) => {
             });
         }
         // Table 名称
-        const query = 'SELECT data FROM your_table WHERE id = ?';
+        const query = 'SELECT data FROM ${config.table} WHERE id = ?';
         connection.query(query, [id], (err, results) => {
             connection.release();
 
