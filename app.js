@@ -98,7 +98,11 @@ app.get('/res/getByID/:id', (req, res) => {
             });
         }
         // Table 名称
-        const query = 'SELECT data FROM ${config.table} WHERE id = ?';
+        // 组合 SQL 查询字符串
+        const queryTemplate = 'SELECT data FROM ';
+        const tableName = config.table;
+        const whereClause = ' WHERE id = ?;';
+        const query = queryTemplate + tableName + whereClause;
         connection.query(query, [id], (err, results) => {
             connection.release();
 
