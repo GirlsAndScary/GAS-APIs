@@ -105,7 +105,7 @@ app.get('/res/getByID/:id', (req, res) => {
         const query = queryTemplate + tableName + whereClause;
         connection.query(query, [id], (err, results) => {
             connection.release();
-
+            const currentTime = formatCurrentTime();
             if (err) {
                 console.error('Error executing query:', err);
                 return res.status(500).json({
