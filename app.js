@@ -16,10 +16,16 @@ const S01 = "OK";
 const S02 = "Error";
 const S03 = "Api Tokens Are Required";
 
-// 读取配置文件
+// 读取sql.json
 const configPath = 'data/sql.json';
 let rawdata = fs.readFileSync(configPath);
 let config = JSON.parse(rawdata);
+
+// 读取apikeys.json
+const readApiKeys = () => {
+    const data = fs.readFileSync('data/apikeys.json');
+    return JSON.parse(data).validApiKeys;
+};
 
 // 创建 MySQL 连接池
 const pool = mysql.createPool({
@@ -128,14 +134,35 @@ app.get('/public/res/getByID/:id', (req, res) => {
                 apiVersion: apiVersion,
                 message: {
                     id: id,
-                    data: results[0].data 
+                    data: results[0].data
                 }
             });
         });
     });
 });
 
+// 处理POST请求的/api路径
+app.post('/private/testkey', (req, res) => {
+    const userApiKey = req.body.apikey;
+    const validApiKeys = readApiKeys();
 
+    if (validApiKeys.includes(userApiKey)) {
+        res.json({
+            status: S01,
+            currentTime: currentTime,
+            apiVersion: apiVersion,
+            message: "API Key Passed."
+        });
+    } else {
+        res.status(401).json({
+            status: S02,
+            currentTime: currentTime,
+            apiVersion: apiVersion,
+            message: "API Key is not correct."
+        });
+        // 在这里执行未通过验证的逻辑
+    }
+});
 
 // 不存在错误请求端点
 app.use((req, res, next) => {
