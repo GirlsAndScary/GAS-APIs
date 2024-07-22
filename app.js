@@ -150,11 +150,11 @@ app.post('/private/testkey', (req, res) => {
     const userApiKey = req.body.apikey;
     const validApiKeys = readApiKeys();
     const currentTime = formatCurrentTime();
-    
+
     // 检查是否包含 apikey
     if (!req.body || !req.body.apikey) {
         return res.status(400).json({
-            status: "S03",
+            status: S03,
             currentTime: currentTime,
             apiVersion: apiVersion,
             message: "Missing API Key."
@@ -163,14 +163,14 @@ app.post('/private/testkey', (req, res) => {
 
     if (validApiKeys.includes(userApiKey)) {
         res.json({
-            status: "S01",
+            status: S01,
             currentTime: currentTime,
             apiVersion: apiVersion,
             message: "API Key Passed."
         });
     } else {
         res.status(401).json({
-            status: "S02",
+            status: S02,
             currentTime: currentTime,
             apiVersion: apiVersion,
             message: "API Key is not correct."
