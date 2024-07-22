@@ -45,7 +45,6 @@ function readMessageFromFile() {
         const data = JSON.parse(fileContent);
         return data.message;
     } catch (err) {
-        console.error('Error reading message from file:', err);
         return 'Default message'; // 当读取文件失败时的默认消息
     }
 }
@@ -89,8 +88,7 @@ app.get('/res/getByID/:id', (req, res) => {
     // 查询数据库
     pool.getConnection((err, connection) => {
         if (err) {
-            console.error('Error getting connection:', err);
-            return res.status(500).json({
+            return res.status(404).json({
                 status: S02,
                 currentTime: currentTime,
                 apiVersion: apiVersion,
@@ -107,8 +105,7 @@ app.get('/res/getByID/:id', (req, res) => {
             connection.release();
             const currentTime = formatCurrentTime();
             if (err) {
-                console.error('Error executing query:', err);
-                return res.status(500).json({
+                return res.status(404).json({
                     status: S02,
                     currentTime: currentTime,
                     apiVersion: apiVersion,
