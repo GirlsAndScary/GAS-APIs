@@ -46,6 +46,7 @@ app.use((req, res, next) => {
 // 使用 body-parser 中间件解析 JSON 请求体
 app.use(bodyParser.json());
 
+//  ----结束初始化程序----
 
 // 定义消息函数
 function readMessageFromFile() {
