@@ -56,7 +56,7 @@ function readMessageFromFile() {
         const data = JSON.parse(fileContent);
         return data.message;
     } catch (err) {
-        return 'Default message'; // 当读取文件失败时的默认消息
+        return 'ErrorInMessageFromFile'; // 当读取文件失败时的默认消息
     }
 }
 
@@ -64,11 +64,30 @@ function readMessageFromFile() {
 function formatCurrentTime() {
     const currentTime = new Date();
     const year = currentTime.getFullYear();
-    const month = String(currentTime.getMonth() + 1).padStart(2, '0'); // 月份从0开始计数，加1
+    const month = String(currentTime.getMonth() + 1).padStart(2, '0'); 
     const day = String(currentTime.getDate()).padStart(2, '0');
     const hours = String(currentTime.getHours()).padStart(2, '0');
     const minutes = String(currentTime.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
+    const seconds = String(currentTime.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+// 定义日志打印函数
+function printLog(req, api_path) {
+    const disabledLogPath = path.join(__dirname, 'data', 'setting.disabledLog');
+    try {
+        if (fs.existsSync(disabledLogPath)) {
+            return; 
+        }
+    } catch(err) {
+        console.error('Error while checking for disabled.log:', err);
+    }
+    
+    const xForwardedFor = req.headers['x-forwarded-for'];
+    const ip = xForwardedFor ? xForwardedFor.split(',')[0].trim() : req.connection.remoteAddress;
+    const currentTime = formatCurrentTime();
+    
+    console.log(`VisitorIP: ${ip} Time: ${currentTime} Path: ${api_path}`);
 }
 
 // 根目录请求端点
@@ -81,6 +100,22 @@ app.get('/', (req, res) => {
         apiVersion: apiVersion,
         message: messageFromFile
     });
+    printLog(req, '/');
+});
+
+app.get('/public/getIP', (req, res) => {
+    const currentTime = formatCurrentTime();
+    const messageFromFile = readMessageFromFile();
+    const xForwardedFor = req.headers['x-forwarded-for'];
+    const ip = xForwardedFor ? xForwardedFor.split(',')[0].trim() : req.connection.remoteAddress;
+    res.json({
+        status: S01,
+        currentTime: currentTime,
+        apiVersion: apiVersion,
+        message: messageFromFile,
+        visitorIP: ip
+    });
+    printLog(req, '/public/getIP');
 });
 
 // 时间请求端点
@@ -91,6 +126,7 @@ app.get('/public/time', (req, res) => {
         currentTime: currentTime,
         apiVersion: apiVersion
     });
+    printLog(req, '/public/time');
 });
 
 // 根据ID查询data字段的请求端点
@@ -132,7 +168,6 @@ app.get('/public/res/getByID/:id', (req, res) => {
                     message: 'No data found with given ID'
                 });
             }
-
             res.json({
                 status: S01,
                 currentTime: currentTime,
@@ -144,6 +179,7 @@ app.get('/public/res/getByID/:id', (req, res) => {
             });
         });
     });
+    printLog(req, `/public/res/getByID/${id}`);
 });
 
 // 处理POST请求的/api路径
@@ -177,6 +213,7 @@ app.post('/private/testkey', (req, res) => {
             message: "API Key is not correct."
         });
     }
+    printLog(req, '/private/testkey');
 });
 
 // 不存在错误请求端点
@@ -188,9 +225,18 @@ app.use((req, res, next) => {
         apiVersion: apiVersion,
         message: 'API endpoint not found'
     });
+    printLog(req, '404');
 });
 
 // 启动服务器，监听端口
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
+    const disabledLogPath = path.join(__dirname, 'data', 'setting.disabledLog');
+    try {
+        if (fs.existsSync(disabledLogPath)) {
+            console.log("Find 'setting.disabledLog' ConsoleLog was disabled.")
+        }
+    } catch(err) {
+        console.error('Error while checking for setting.disabledLog:', err);
+    }
 });
